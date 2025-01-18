@@ -29,3 +29,8 @@ mix igniter.new tuneshg \
 
 **Link**:
 [HexDocs Ash Getting started](https://hexdocs.pm/ash/get-started.html)
+
+**Create Domain and Resource**
+
+mix ash.gen.domain Tuneshg.Music
+mix ash.gen.resource Tuneshg.Music.Artist --extend postgres

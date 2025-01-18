@@ -43,7 +43,7 @@ config :spark,
 config :tuneshg,
   ecto_repos: [Tuneshg.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [Tuneshg.Support]
+  ash_domains: [Tuneshg.Music, Tuneshg.Support]
 
 # Configures the endpoint
 config :tuneshg, TuneshgWeb.Endpoint,
