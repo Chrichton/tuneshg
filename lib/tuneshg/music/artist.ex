@@ -6,6 +6,11 @@ defmodule Tuneshg.Music.Artist do
     repo Tuneshg.Repo
   end
 
+  actions do
+    defaults [:create, :read, :update, :destroy]
+    default_accept [:name, :biography]
+  end
+
   attributes do
     uuid_primary_key :id
 

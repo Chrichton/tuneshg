@@ -35,8 +35,12 @@ mix igniter.new tuneshg \
 mix ash.gen.domain Tuneshg.Music
 mix ash.gen.resource Tuneshg.Music.Artist --extend postgres
 
-# Define attributes for resource (Music/Artist)
+# Define attributes and actions for resource (Music/Artist)
 
 # Create migrations - mix ash.codegen create_artists
 
 # Run migrations - mix ash.migrate
+
+**Generate LiveView**
+
+mix ash_phoenix.gen.live --domain Tuneshg.Music --resource Tuneshg.Music.Artist --resourceplural Artists
