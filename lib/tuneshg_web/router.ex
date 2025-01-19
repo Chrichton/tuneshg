@@ -18,6 +18,12 @@ defmodule TuneshgWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/artists", ArtistLive.Index, :index
+    live "/artists/new", ArtistLive.Index, :new
+    live "/artists/:id/edit", ArtistLive.Index, :edit
+
+    live "/artists/:id", ArtistLive.Show, :show
+    live "/artists/:id/show/edit", ArtistLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
