@@ -43,4 +43,4 @@ mix ash.gen.resource Tuneshg.Music.Artist --extend postgres
 
 **Generate LiveView**
 
-mix ash_phoenix.gen.live --domain Tuneshg.Music --resource Tuneshg.Music.Artist --resourceplural Artists
+mix ash_phoenix.gen.live --domain Tuneshg.Music --resource Tuneshg.Music.Artist --resourceplural artists
