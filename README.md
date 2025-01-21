@@ -44,3 +44,19 @@ mix ash.gen.resource Tuneshg.Music.Artist --extend postgres
 **Generate LiveView**
 
 mix ash_phoenix.gen.live --domain Tuneshg.Music --resource Tuneshg.Music.Artist --resourceplural artists
+
+**Working with AshPhoenix.Form**
+
+form = AshPhoenix.Form.for_create(Tunez.Music.Artist, :create)
+AshPhoenix.Form.validate(form, %{name: "Best Band Ever"})
+AshPhoenix.Form.submit(form, params: %{name: "Best Band Ever"})
+
+**Working with domain extensions**
+
+defmodule Tuneshg.Music do
+use Ash.Domain, extensions: [AshPhoenix]
+
+The AshPhoenix extension adds `form_to_...` functions to the access-funktions of the domain
+
+At example:
+form = Tuneshg.Music.form_to_create_artist()
