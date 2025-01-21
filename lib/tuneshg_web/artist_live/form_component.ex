@@ -66,9 +66,9 @@ defmodule TuneshgWeb.ArtistLive.FormComponent do
   defp assign_form(%{assigns: %{artist: artist}} = socket) do
     form =
       if artist do
-        AshPhoenix.Form.for_update(artist, :update, as: "artist")
+        Tuneshg.Music.form_to_update_artist(artist)
       else
-        AshPhoenix.Form.for_create(Tuneshg.Music.Artist, :create, as: "artist")
+        Tuneshg.Music.form_to_create_artist()
       end
 
     assign(socket, form: to_form(form))
