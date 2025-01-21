@@ -18,7 +18,7 @@ defmodule TuneshgWeb.ArtistLive.Index do
       rows={@streams.artists}
       row_click={fn {_id, artist} -> JS.navigate(~p"/artists/#{artist}") end}
     >
-      <:col :let={{_id, artist}} label="Id">{artist.id}</:col>
+      <:col :let={{_id, artist}} label="Name">{artist.name}</:col>
 
       <:action :let={{_id, artist}}>
         <div class="sr-only">
