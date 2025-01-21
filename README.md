@@ -60,3 +60,25 @@ The AshPhoenix extension adds `form_to_...` functions to the access-funktions of
 
 At example:
 form = Tuneshg.Music.form_to_create_artist()
+
+# chapter 2
+
+**relationships**
+
+# Album Domain
+
+```
+relationships do
+  belongs_to :artist, Tuneshg.Music.Artist do
+    allow_nil? false
+  end
+end
+```
+
+# artist
+
+```
+relationships do
+  has_many :albums, Tuneshg.Music.Album
+end
+```
