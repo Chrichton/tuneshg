@@ -82,3 +82,6 @@ relationships do
   has_many :albums, Tuneshg.Music.Album
 end
 ```
+
+Hex
+https://hexdocs.pm/ash_phoenix/2.1.13/AshPhoenix.Form.Auto.html
