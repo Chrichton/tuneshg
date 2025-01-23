@@ -29,11 +29,14 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
           />
         <% end %>
         <%= if @form.source.type == :update do %>
-          <.input field={@form[:name]} type="text" label="Name" /><.input
-            field={@form[:year_released]}
-            type="number"
-            label="Year released"
-          /><.input field={@form[:cover_image_url]} type="text" label="Cover image url" />
+          <.input field={@form[:name]} type="text" label="Name" />
+          <.input field={@form[:year_released]} type="number" label="Year released" /><.input
+            field={@form[:cover_image_url]}
+            type="text"
+            label="Cover image url"
+          /><.input field={@form[:artist_id]} type="text" label="Artist_Id" />
+          <.input name="artist_id" value={@artist.name} label="Artist" disabled />
+          <%!-- <pre><%= inspect(@form, pretty: true) %></pre> --%>
         <% end %>
 
         <:actions>
@@ -77,16 +80,16 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 
   defp assign_form(%{assigns: %{album: album}} = socket) do
-    form =
-      if album do
-        artist = Tuneshg.Music.get_artist_by_id(album.artist_id)
-        assign(socket, artist: artist)
-        # Tuneshg.Music.form_to_update_album(album, forms: [auto?: true])
-        Tuneshg.Music.form_to_update_album(album, artist: artist)
-      else
-        Tuneshg.Music.form_to_create_album()
-      end
+    if album do
+      artist = Tuneshg.Music.get_artist_by_id!(album.artist_id)
+      form = Tuneshg.Music.form_to_update_album(album)
 
-    assign(socket, form: to_form(form))
+      socket
+      |> assign(artist: artist)
+      |> assign(form: to_form(form))
+    else
+      form = Tuneshg.Music.form_to_create_album()
+      assign(socket, form: to_form(form))
+    end
   end
 end
