@@ -82,7 +82,14 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
   defp assign_form(%{assigns: %{album: album}} = socket) do
     if album do
       artist = Tuneshg.Music.get_artist_by_id!(album.artist_id)
-      form = AshPhoenix.Form.for_update(album, :update, as: "album")
+
+      form =
+        AshPhoenix.Form.for_update(album, :update,
+          as: "album",
+          transform_params: fn _form, params, _context ->
+            Map.put(params, "artist_id", artist.id)
+          end
+        )
 
       socket
       |> assign(artist: artist)
