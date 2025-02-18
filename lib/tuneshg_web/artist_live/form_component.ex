@@ -66,8 +66,29 @@ defmodule TuneshgWeb.ArtistLive.FormComponent do
   defp assign_form(%{assigns: %{artist: artist}} = socket) do
     form =
       if artist do
+        # Tuneshg.Music.form_to_update_artist(artist)
+
+        # instead of
+        # AshPhoenix.Form.for_update(artist, :update, as: "artist")
+
+        # doesn't work. Different Params to Validate
+        # HANDLE EVENT "validate" in TuneshgWeb.ArtistLive.Index
+        # Component: TuneshgWeb.ArtistLive.FormComponent
+        # Parameters: %{"_target" => ["form", "name"], "form" => %{"_unused_biography" => "", "_unused_name" => "", "biography" => "", "name" => "m"}}
+        # Why does that happen?
+
+        # when using
+        # AshPhoenix.Form.for_update(artist, :update, as: "artist")
+        # the params are:
+        # HANDLE EVENT "validate" in TuneshgWeb.ArtistLive.Index
+        # Component: TuneshgWeb.ArtistLive.FormComponent
+        # Parameters: %{"_target" => ["artist", "biography"], "artist" => %{"biography" => "my_biography", "name" => "my_name"}}
+
         AshPhoenix.Form.for_update(artist, :update, as: "artist")
       else
+        # Tuneshg.Music.form_to_create_artist()
+        # doesn't work for the same reason
+
         AshPhoenix.Form.for_create(Tuneshg.Music.Artist, :create, as: "artist")
       end
 
