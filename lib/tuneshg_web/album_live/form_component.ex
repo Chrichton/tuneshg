@@ -56,12 +56,12 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"album" => album_params}, socket) do
-    {:noreply, assign(socket, form: AshPhoenix.Form.validate(socket.assigns.form, album_params))}
+  def handle_event("validate", %{"form" => form_data}, socket) do
+    {:noreply, assign(socket, form: AshPhoenix.Form.validate(socket.assigns.form, form_data))}
   end
 
-  def handle_event("save", %{"album" => album_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.form, params: album_params) do
+  def handle_event("save", %{"form" => form_data}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.form, params: form_data) do
       {:ok, album} ->
         notify_parent({:saved, album})
 
@@ -82,20 +82,13 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
   defp assign_form(%{assigns: %{album: album}} = socket) do
     if album do
       artist = Tuneshg.Music.get_artist_by_id!(album.artist_id)
-
-      form =
-        AshPhoenix.Form.for_update(album, :update,
-          as: "album",
-          transform_params: fn _form, params, _context ->
-            Map.put(params, "artist_id", artist.id)
-          end
-        )
+      form = Tuneshg.Music.form_to_update_album(album)
 
       socket
       |> assign(artist: artist)
       |> assign(form: to_form(form))
     else
-      form = AshPhoenix.Form.for_create(Tuneshg.Music.Album, :create, as: "album")
+      form = Tuneshg.Music.form_to_create_album()
       assign(socket, form: to_form(form))
     end
   end
