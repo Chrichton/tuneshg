@@ -40,18 +40,23 @@ defmodule TuneshgWeb.ArtistLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"artist" => artist_params}, socket) do
-    {:noreply, assign(socket, form: AshPhoenix.Form.validate(socket.assigns.form, artist_params))}
+  def handle_event("validate", %{"form" => form_data}, socket) do
+    socket =
+      update(socket, :form, fn form ->
+        AshPhoenix.Form.validate(form, form_data)
+      end)
+
+    {:noreply, socket}
   end
 
-  def handle_event("save", %{"artist" => artist_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.form, params: artist_params) do
+  def handle_event("save", %{"form" => form_data}, socket) do
+    case AshPhoenix.Form.submit(socket.assigns.form, params: form_data) do
       {:ok, artist} ->
         notify_parent({:saved, artist})
 
         socket =
           socket
-          |> put_flash(:info, "Artist #{socket.assigns.form.source.type}d successfully")
+          |> put_flash(:info, "Artist #{socket.assigns.form.source.type} saved successfully")
           |> push_patch(to: socket.assigns.patch)
 
         {:noreply, socket}
@@ -66,7 +71,7 @@ defmodule TuneshgWeb.ArtistLive.FormComponent do
   defp assign_form(%{assigns: %{artist: artist}} = socket) do
     form =
       if artist do
-        # Tuneshg.Music.form_to_update_artist(artist)
+        Tuneshg.Music.form_to_update_artist(artist)
 
         # instead of
         # AshPhoenix.Form.for_update(artist, :update, as: "artist")
@@ -84,12 +89,11 @@ defmodule TuneshgWeb.ArtistLive.FormComponent do
         # Component: TuneshgWeb.ArtistLive.FormComponent
         # Parameters: %{"_target" => ["artist", "biography"], "artist" => %{"biography" => "my_biography", "name" => "my_name"}}
 
-        AshPhoenix.Form.for_update(artist, :update, as: "artist")
+        # AshPhoenix.Form.for_update(artist, :update)
       else
-        # Tuneshg.Music.form_to_create_artist()
-        # doesn't work for the same reason
+        Tuneshg.Music.form_to_create_artist()
 
-        AshPhoenix.Form.for_create(Tuneshg.Music.Artist, :create, as: "artist")
+        # AshPhoenix.Form.for_create(Tuneshg.Music.Artist, :create)
       end
 
     assign(socket, form: to_form(form))
