@@ -90,3 +90,6 @@ To select **Artist -> Artist_Id** via Lookup-Form when **creating/editing Album*
 
 - Did **Installation**-Steps
 - Added **Example** Code to AlbumLive.FormComponent
+- Changed _form_for_ to _<.form :let={f} for={@form}_
+
+[arrowsmith](https://arrowsmithlabs.com/blog/you-can-stop-using-form-for-in-phoenix)

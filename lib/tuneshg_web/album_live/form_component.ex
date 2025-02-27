@@ -18,8 +18,8 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
         phx-submit="save"
       >
         <%= if @form.source.type == :create do %>
-          <.form for={@form} phx-change="change">
-            <.live_select field={@form[:city_search]} phx-target={@myself} label="City" />
+          <.form :let={f} for={@form} phx-change="change">
+            <.live_select field={f[:city_search]} phx-target={@myself} label="City" />
           </.form>
           <.input field={@form[:name]} type="text" label="Name" /><.input
             field={@form[:year_released]}
