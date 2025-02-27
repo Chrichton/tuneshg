@@ -18,11 +18,14 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
         phx-submit="save"
       >
         <%= if @form.source.type == :create do %>
+          <.form for={@form} phx-change="change">
+            <.live_select field={@form[:city_search]} phx-target={@myself} label="City" />
+          </.form>
           <.input field={@form[:name]} type="text" label="Name" /><.input
             field={@form[:year_released]}
             type="number"
             label="Year released"
-          /><.input field={@form[:cover_image_url]} type="text" label="Cover image url" /><.input
+          /><.input field={@form[:cover_image_url]} type="text" Label="Cover image url" /><.input
             field={@form[:artist_id]}
             type="text"
             label="Artist"
@@ -75,6 +78,31 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
       {:error, form} ->
         {:noreply, assign(socket, form: form)}
     end
+  end
+
+  @impl true
+  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
+    # cities = City.search(text)
+    cities = [
+      {"New York City", [-74.00597, 40.71427]},
+      {"New Kingston", [-76.78319, 18.00747]}
+      # ...
+    ]
+
+    send_update(LiveSelect.Component, id: live_select_id, options: cities)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event(
+        "change",
+        %{"my_form" => %{"city_search_text_input" => city_name, "city_search" => city_coords}},
+        socket
+      ) do
+    IO.puts("You selected city #{city_name} located at: #{city_coords}")
+
+    {:noreply, socket}
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})

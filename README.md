@@ -24,8 +24,7 @@ mix archive.install hex phx_new
 mix igniter.new tuneshg \
  --install ash,ash_postgres,ash_phoenix \
  --with phx.new \
- --extend postgres \
- --example
+ --extend postgres
 
 **Link**:
 [HexDocs Ash Getting started](https://hexdocs.pm/ash/get-started.html)
@@ -83,5 +82,11 @@ relationships do
 end
 ```
 
-Hex
-https://hexdocs.pm/ash_phoenix/2.1.13/AshPhoenix.Form.Auto.html
+# live_select
+
+To select **Artist -> Artist_Id** via Lookup-Form when **creating/editing Album**
+
+[hexdocs](https://hexdocs.pm/live_select/readme.html#content)
+
+- Did **Installation**-Steps
+- Added **Example** Code to AlbumLive.FormComponent
