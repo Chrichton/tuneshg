@@ -10,6 +10,10 @@ defmodule Tuneshg.Music do
       define :get_artist_by_id, action: :read, get_by: :id
       define :update_artist, action: :update
       define :destroy_artist, action: :destroy
+
+      define :search_artists,
+        action: :search,
+        args: [:query]
     end
 
     resource Tuneshg.Music.Album do

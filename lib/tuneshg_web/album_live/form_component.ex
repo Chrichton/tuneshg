@@ -18,28 +18,30 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
         phx-submit="save"
       >
         <%= if @form.source.type == :create do %>
+          <.input field={@form[:name]} type="text" label="Name" />
+          <.input field={@form[:year_released]} type="number" label="Year released" />
+          <.input field={@form[:cover_image_url]} type="text" label="Cover image url" />
           <.form :let={f} for={@form} phx-change="change">
-            <.live_select field={f[:city_search]} phx-target={@myself} label="City" />
+            <.live_select
+              field={f[:artist_id]}
+              id="live_select_id"
+              phx-target={@myself}
+              label="Artist"
+            />
           </.form>
-          <.input field={@form[:name]} type="text" label="Name" /><.input
-            field={@form[:year_released]}
-            type="number"
-            label="Year released"
-          /><.input field={@form[:cover_image_url]} type="text" Label="Cover image url" /><.input
-            field={@form[:artist_id]}
-            type="text"
-            label="Artist"
-          />
         <% end %>
         <%= if @form.source.type == :update do %>
           <.input field={@form[:name]} type="text" label="Name" />
-          <.input field={@form[:year_released]} type="number" label="Year released" /><.input
-            field={@form[:cover_image_url]}
-            type="text"
-            label="Cover image url"
-          /><.input field={@form[:artist_id]} type="text" label="Artist_Id" />
-          <.input name="artist_id" value={@artist.name} label="Artist" disabled />
-          <%!-- <pre><%= inspect(@form, pretty: true) %></pre> --%>
+          <.input field={@form[:year_released]} type="number" label="Year released" />
+          <.input field={@form[:cover_image_url]} type="text" label="Cover image url" />
+          <.form :let={f} for={@form} phx-change="change">
+            <.live_select
+              field={f[:artist_id]}
+              id="live_select_id"
+              phx-target={@myself}
+              label="Artist"
+            />
+          </.form>
         <% end %>
 
         <:actions>
@@ -64,13 +66,16 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
   end
 
   def handle_event("save", %{"form" => form_data}, socket) do
+    IO.inspect(form_data, label: "form_data")
+    IO.inspect(socket.assigns.form, label: "form")
+
     case AshPhoenix.Form.submit(socket.assigns.form, params: form_data) do
       {:ok, album} ->
         notify_parent({:saved, album})
 
         socket =
           socket
-          |> put_flash(:info, "Album #{socket.assigns.form.source.type}d successfully")
+          |> put_flash(:info, "Album #{socket.assigns.form.source.type} saved successfully")
           |> push_patch(to: socket.assigns.patch)
 
         {:noreply, socket}
@@ -82,25 +87,11 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
 
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
-    # cities = City.search(text)
-    cities = [
-      {"New York City", [-74.00597, 40.71427]},
-      {"New Kingston", [-76.78319, 18.00747]}
-      # ...
-    ]
+    artists =
+      Tuneshg.Music.search_artists!(text, query: [sort_input: "name"])
+      |> Enum.map(fn artist -> {artist.name, artist.id} end)
 
-    send_update(LiveSelect.Component, id: live_select_id, options: cities)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event(
-        "change",
-        %{"my_form" => %{"city_search_text_input" => city_name, "city_search" => city_coords}},
-        socket
-      ) do
-    IO.puts("You selected city #{city_name} located at: #{city_coords}")
+    send_update(LiveSelect.Component, id: live_select_id, options: artists)
 
     {:noreply, socket}
   end
@@ -111,6 +102,7 @@ defmodule TuneshgWeb.AlbumLive.FormComponent do
     if album do
       artist = Tuneshg.Music.get_artist_by_id!(album.artist_id)
       form = Tuneshg.Music.form_to_update_album(album)
+      send_update(LiveSelect.Component, id: "live_select_id", value: {artist.name, artist.id})
 
       socket
       |> assign(artist: artist)

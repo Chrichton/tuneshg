@@ -4,11 +4,31 @@ defmodule Tuneshg.Music.Artist do
   postgres do
     table "artists"
     repo Tuneshg.Repo
+
+    custom_indexes do
+      index "name gin_trgm_ops", name: "artists_name_gin_index", using: "GIN"
+    end
   end
 
   actions do
     defaults [:create, :read, :update, :destroy]
     default_accept [:name, :biography]
+
+    read :search do
+      description "List Artists, optionally filtering by name."
+
+      argument :query, :ci_string do
+        description "Return only artists with names including the given value."
+        constraints allow_empty?: true
+        default ""
+      end
+
+      prepare build(select: [:id, :name])
+
+      filter expr(contains(name, ^arg(:query)))
+
+      # pagination offset?: true, default_limit: 12
+    end
   end
 
   attributes do
@@ -16,6 +36,7 @@ defmodule Tuneshg.Music.Artist do
 
     attribute :name, :string do
       allow_nil? false
+      public? true
     end
 
     attribute :biography, :string

@@ -14,7 +14,7 @@ defmodule Tuneshg.Music.Album do
     end
 
     update :update do
-      accept [:name, :year_released, :cover_image_url]
+      accept [:name, :year_released, :cover_image_url, :artist_id]
     end
   end
 
